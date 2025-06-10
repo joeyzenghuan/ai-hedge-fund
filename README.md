@@ -93,6 +93,8 @@ GROQ_API_KEY=your-groq-api-key
 FINANCIAL_DATASETS_API_KEY=your-financial-datasets-api-key
 ```
 
+5. poetry run python src/main.py --ticker MSFT --show-reasoning
+
 ### Using Docker
 
 1. Make sure you have Docker installed on your system. If not, you can download it from [Docker's official website](https://www.docker.com/get-started).
