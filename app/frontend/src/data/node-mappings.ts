@@ -8,13 +8,13 @@ export interface NodeTypeDefinition {
 
 // Define node creation functions for each type
 const nodeTypeDefinitions: Record<string, NodeTypeDefinition> = {
-  "Text Input": {
+  "Portfolio Manager": {
     createNode: (position: { x: number, y: number }): AppNode => ({
-      id: `text-input-node`,
-      type: "input-node",
+      id: `portfolio-manager-node`,
+      type: "portfolio-manager-node",
       position,
       data: {
-        name: "Input",
+        name: "Portfolio Manager",
         description: "Start Node",
         status: "Idle",
       },
@@ -32,13 +32,13 @@ const nodeTypeDefinitions: Record<string, NodeTypeDefinition> = {
       },
     }),
   },
-  "Text Output": {
+  "Investment Report": {
     createNode: (position: { x: number, y: number }): AppNode => ({
-      id: `text-output-node`,
-      type: "text-output-node",
+      id: `investment-report-node`,
+      type: "investment-report-node",
       position,
       data: {
-        name: "Text Output",
+        name: "Investment Report",
         description: "Output Node",
         status: "Idle",
       },
@@ -68,11 +68,11 @@ export function getNodeTypeDefinition(componentName: string): NodeTypeDefinition
 
 // Get the node ID that would be generated for a component
 export function getNodeIdForComponent(componentName: string): string | null {
-  if (componentName === "Text Input") {
-    return "text-input-node";
+  if (componentName === "Portfolio Manager") {
+    return "portfolio-manager-node";
   }
-  if (componentName === "Text Output") {
-    return "text-output-node";
+  if (componentName === "Investment Report") {
+    return "investment-report-node";
   }
   if (componentName === "JSON Output") {
     return "json-output-node";

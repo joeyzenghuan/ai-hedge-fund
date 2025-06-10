@@ -1,6 +1,6 @@
 import { ModelSelector } from '@/components/ui/llm-selector';
 import { getConnectedEdges, useReactFlow, type NodeProps } from '@xyflow/react';
-import { Bot, Loader2, Play } from 'lucide-react';
+import { Brain, Loader2, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -9,17 +9,17 @@ import { CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNodeContext } from '@/contexts/node-context';
-import { apiModels, defaultModel, ModelItem } from '@/data/models';
+import { apiModels, defaultModel, mapProviderToEnum, ModelItem } from '@/data/models';
 import { api } from '@/services/api';
-import { type TextInputNode } from '../types';
+import { type PortfolioManagerNode } from '../types';
 import { NodeShell } from './node-shell';
 
-export function TextInputNode({
+export function PortfolioManagerNode({
   data,
   selected,
   id,
   isConnectable,
-}: NodeProps<TextInputNode>) {
+}: NodeProps<PortfolioManagerNode>) {
   const [tickers, setTickers] = useState('');
   const [selectedModel, setSelectedModel] = useState<ModelItem | null>(defaultModel);
   
@@ -96,11 +96,27 @@ export function TextInputNode({
         selectedAgents.add(node.id);
       }
     });
+
+    // Collect agent models from connected agent nodes
+    const agentModels = [];
+    const allAgentModels = nodeContext.getAllAgentModels();
+    for (const agentId of selectedAgents) {
+      const model = allAgentModels[agentId];
+      if (model) {
+        agentModels.push({
+          agent_id: agentId,
+          model_name: model.model_name,
+          model_provider: mapProviderToEnum(model.provider)
+        });
+      }
+    }
         
     abortControllerRef.current = api.runHedgeFund(
       {
         tickers: tickerList,
         selected_agents: Array.from(selectedAgents),
+        agent_models: agentModels,
+        // Keep global model for backwards compatibility (will be removed later)
         model_name: selectedModel?.model_name || undefined,
         model_provider: selectedModel?.provider as any || undefined,
         start_date: startDate,
@@ -117,8 +133,8 @@ export function TextInputNode({
         id={id}
         selected={selected}
         isConnectable={isConnectable}
-        icon={<Bot className="h-5 w-5" />}
-        name={data.name || "Custom Component"}
+        icon={<Brain className="h-5 w-5" />}
+        name={data.name || "Portfolio Manager"}
         description={data.description}
         hasLeftHandle={false}
       >
